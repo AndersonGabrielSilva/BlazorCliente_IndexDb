@@ -1,11 +1,12 @@
 ﻿@page "/produto"
+@inject IIndexedDbFactory DbFactory
 @inject IProdutoRepository ProdutoRepository
 
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (Produtos == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -14,20 +15,18 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Id</th>
+                <th>Descricão</th>
+                <th>Preco</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var produto in Produtos)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@produto.Id</td>
+                    <td>@produto.Descricao</td>
+                    <td>@produto.preco</td>
                 </tr>
             }
         </tbody>
@@ -35,30 +34,23 @@ else
 }
 
 @code {
-    List<BlazorCliente_IndexDb.Entities.Produto> Produtos;
-
-    //protected override async Task OnInitAsync()
-    //{
-    //    //using var db = await ProdutoRepository
-    //    //    people = db.People.ToList();
-    //    Task.CompletedTask;
-    //}
-
-    private WeatherForecast[] forecasts;
+    IEnumerable<BlazorCliente_IndexDb.Entities.Produto> Produtos;
 
     protected override async Task OnInitializedAsync()
-    {
-        Produtos = await ProdutoRepository.Get();
-    }
+    {     
+        //Remove
+        await ProdutoRepository.Delete(10);
 
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
+        //Update
+        var produtoUpdate = new Produto { Id = 11, Descricao = "Anderson Teste", preco = "0" };
+        await ProdutoRepository.Update(produtoUpdate);
 
-        public int TemperatureC { get; set; }
+        //Listar Tuto
+        Produtos = await ProdutoRepository.GetAll();
 
-        public string Summary { get; set; }
+        //Selecionar
+        var produto = await ProdutoRepository.Get(21);
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        Console.WriteLine(produto);
     }
 }

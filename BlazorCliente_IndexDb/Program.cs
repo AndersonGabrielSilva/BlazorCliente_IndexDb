@@ -21,7 +21,7 @@ namespace BlazorCliente_IndexDb
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddSingleton<IIndexedDbFactory, IndexedDbFactory>();
-            builder.Services.AddTransient<IProdutoRepository, ProdutoRepository>();
+            builder.Services.AddSingleton<IProdutoRepository, ProdutoRepository>();
 
 
             await builder.Build().RunAsync();
